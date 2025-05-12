@@ -1,0 +1,171 @@
+<!-- Capstone Project: Responsive Web App (Mini E-commerce Website) -->
+
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mini E-Commerce</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem;
+      background: #333;
+      color: #fff;
+    }
+    nav a {
+      color: #fff;
+      margin: 0 10px;
+      text-decoration: none;
+    }
+    section {
+      padding: 1rem;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+    .card {
+      border: 1px solid #ccc;
+      padding: 1rem;
+      text-align: center;
+      background: #f9f9f9;
+    }
+    .card img {
+      width: 100%;
+      max-height: 180px;
+      object-fit: cover;
+      margin-bottom: 10px;
+    }
+    button {
+      padding: 0.5rem 1rem;
+      margin-top: 10px;
+    }
+    form input,
+    form textarea {
+      display: block;
+      width: 100%;
+      margin-bottom: 10px;
+      padding: 0.5rem;
+    }
+
+    @media (max-width: 768px) {
+      header, nav {
+        flex-direction: column;
+      }
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    img[loading="lazy"] {
+      background: #eaeaea;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Mini Store</h1>
+    <nav>
+      <a href="#home">Home</a>
+      <a href="#products">Products</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </header>
+
+  <section id="home">
+    <h2>Welcome to Mini Store</h2>
+    <p>Explore our collection and add items to your cart!</p>
+  </section>
+
+  <section id="products">
+    <h2>Products</h2>
+    <div>
+      <label>Sort by Price:</label>
+      <select id="sortSelect">
+        <option value="asc">Low to High</option>
+        <option value="desc">High to Low</option>
+      </select>
+    </div>
+    <div id="product-list" class="grid"></div>
+  </section>
+
+  <section id="contact">
+    <h2>Contact Us</h2>
+    <form id="contactForm">
+      <input type="text" placeholder="Name" required />
+      <input type="email" placeholder="Email" required />
+      <textarea placeholder="Your message" required></textarea>
+      <button type="submit">Submit</button>
+    </form>
+  </section>
+
+  <footer>
+    <p>&copy; 2025 Mini Store</p>
+  </footer>
+
+  <script>
+    const products = [
+      { name: "Smartphone", price: 8000, category: "electronics", rating: 4.5, image: "smart.png" },
+      { name: "T-shirt", price: 500, category: "clothing", rating: 4.0, image: "shirt.png" },
+      { name: "Laptop", price: 40000, category: "electronics", rating: 4.8, image: "laptop.jpeg" },
+      { name: "Jeans", price: 1200, category: "clothing", rating: 3.9, image: "jeans.jpeg" },
+      { name: "Headphones", price: 1500, category: "electronics", rating: 4.2, image: "headphones.png" }
+    ];
+
+    function renderProducts(sort = 'asc') {
+      const productList = document.getElementById("product-list");
+      productList.innerHTML = "";
+
+      const sorted = [...products].sort((a, b) =>
+        sort === "asc" ? a.price - b.price : b.price - a.price
+      );
+
+      sorted.forEach((p) => {
+        const div = document.createElement("div");
+        div.className = "card";
+        div.innerHTML = `
+          <img src="${p.image}" alt="${p.name}" loading="lazy"/>
+          <h3>${p.name}</h3>
+          <p>Price: ₹${p.price}</p>
+          <p>Rating: ⭐ ${p.rating}</p>
+          <button onclick="addToCart('${p.name}')">Add to Cart</button>
+        `;
+        productList.appendChild(div);
+      });
+    }
+
+    function addToCart(item) {
+      let cart = JSON.parse(localStorage.getItem("cart")) || [];
+      cart.push(item);
+      localStorage.setItem("cart", JSON.stringify(cart));
+      alert(`${item} added to cart!`);
+    }
+
+    document.getElementById("sortSelect").addEventListener("change", (e) => {
+      renderProducts(e.target.value);
+    });
+
+    document.getElementById("contactForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      alert("Message sent successfully!");
+    });
+
+    // Initial load
+    renderProducts();
+  </script>
+</body>
+</html>
